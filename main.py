@@ -5,8 +5,8 @@ import PyPDF2
 import anthropic
 import fitz
 import streamlit as st
-import sys
 from PIL import Image
+from streamlit_theme import st_theme
 
 api_key = "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"
 
@@ -47,6 +47,7 @@ def compress_image(image_bytes, quality=20):
     compressed_image_bytes = compressed_image_io.getvalue()
 
     return compressed_image_bytes
+
 
 # returns a list of dictionaries with the following keys:
 # - page: page number
@@ -102,17 +103,27 @@ def extract_images_from_pdf(uploaded_file):
     return images
 
 
+def get_theme_image():
+    theme = st_theme()
+    if theme["base"] == "dark":
+        return "skyincap_logo_white.svg"
+    else:
+        return "skyincap_logo_colored.svg"
+
+
+with open(get_theme_image(), "r") as svg_file:
+    svg_content = svg_file.read()
+
 with st.sidebar:
+    st.markdown(f'<div>{svg_content}</div><br>', unsafe_allow_html=True)
     anthropic_api_key = st.text_input("Anthropic API Key", key="file_qa_api_key", type="password")
-    "[View the source code](https://github.com/streamlit/llm-examples/blob/main/pages/1_File_Q%26A.py)"
-    "[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/streamlit/llm-examples?quickstart=1)"
 
-st.title("📝 File Q&A with Anthropic")
+st.title("📝 Custom AI Agent")
 
-uploaded_file = st.file_uploader("Upload an article", type=("txt", "md", "pdf"))
+uploaded_file = st.file_uploader("Upload a document", type=("txt", "md", "pdf"))
 
 question = st.text_input(
-    "Ask something about the article",
+    "Ask something about the document",
     placeholder="Can you give me a short summary?",
     disabled=not uploaded_file,
 )
