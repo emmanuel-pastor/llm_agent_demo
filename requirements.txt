@@ -1,0 +1,6 @@
+PyPDF2
+anthropic
+PyMuPDF
+streamlit
+Pillow
+streamlit-theme

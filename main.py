@@ -8,9 +8,6 @@ import streamlit as st
 from PIL import Image
 from streamlit_theme import st_theme
 
-api_key = "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"
-
-
 def extract_text_from_pdf(uploaded_file):
     reader = PyPDF2.PdfReader(uploaded_file)
     text = ''
@@ -32,18 +29,14 @@ def encode_image(image_path):
 
 
 def compress_image(image_bytes, quality=20):
-    # Open the image from bytes
     image = Image.open(io.BytesIO(image_bytes))
 
-    # Convert image to RGB if it's not in that mode
     if image.mode != 'RGB':
         image = image.convert('RGB')
 
-    # Compress the image and save it as JPEG
     compressed_image_io = io.BytesIO()
     image.save(compressed_image_io, format='JPEG', quality=quality)
 
-    # Get the compressed image bytes
     compressed_image_bytes = compressed_image_io.getvalue()
 
     return compressed_image_bytes
@@ -55,38 +48,27 @@ def compress_image(image_bytes, quality=20):
 # - extension: image extension
 # - base64: base64 encoded image
 def extract_images_from_pdf(uploaded_file):
-    # Convert the uploaded file buffer to bytes
     pdf_bytes = uploaded_file.getbuffer().tobytes()
 
-    # Open the PDF file from the bytes object
     pdf_document = fitz.open(stream=pdf_bytes, filetype="pdf")
 
-    # List to store image data
     images = []
 
-    # Iterate through each page
     for page_num in range(len(pdf_document)):
         page = pdf_document[page_num]
 
-        # Get the images on the current page
         image_list = page.get_images()
 
-        # Iterate through the images
         for img_index, img in enumerate(image_list):
-            # Get the XREF of the image
             xref = img[0]
 
-            # Extract the image bytes
             base_image = pdf_document.extract_image(xref)
             image_bytes = base_image["image"]
 
-            # Compress the image bytes
             compressed_image_bytes = compress_image(image_bytes)
 
-            # Get image extension
             image_ext = base_image["ext"]
 
-            # Convert compressed image bytes to base64
             base64_image = base64.b64encode(compressed_image_bytes).decode('utf-8')
 
             # Store image info
@@ -97,7 +79,6 @@ def extract_images_from_pdf(uploaded_file):
                 'base64': base64_image
             })
 
-    # Close the PDF file
     pdf_document.close()
 
     return images
@@ -105,7 +86,7 @@ def extract_images_from_pdf(uploaded_file):
 
 def get_theme_image():
     theme = st_theme()
-    if theme["base"] == "dark":
+    if theme and theme["base"] == "dark":
         return "skyincap_logo_white.svg"
     else:
         return "skyincap_logo_colored.svg"
