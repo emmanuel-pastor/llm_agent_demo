@@ -3,4 +3,4 @@ anthropic
 PyMuPDF
 streamlit
 Pillow
-streamlit-theme
+st-theme
