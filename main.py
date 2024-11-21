@@ -97,7 +97,7 @@ with open(get_theme_image(), "r") as svg_file:
 
 with st.sidebar:
     st.markdown(f'<div style="text-align: center;">{svg_content}</div><br>', unsafe_allow_html=True)
-    anthropic_api_key = st.text_input("Anthropic API Key", key="file_qa_api_key", type="password")
+    anthropic_api_key = st.text_input("API Key", key="file_qa_api_key", type="password")
 
 st.title("📝 Custom AI Agent")
 
